@@ -1,0 +1,41 @@
+basePath: /
+host: localhost:3000
+info:
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
+paths:
+  /:
+    get:
+      consumes:
+      - '*/*'
+      description: Renders Index view with variables injected
+      produces:
+      - text/html
+      responses:
+        "200":
+          description: OK
+      summary: Render an index.html page
+      tags:
+      - root
+  /api:
+    get:
+      consumes:
+      - '*/*'
+      description: Returns a version number
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: API index route
+      tags:
+      - api
+swagger: "2.0"
