@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"strings"
+	"time"
 	"web-service/utils"
 )
 
@@ -40,8 +41,8 @@ func SpotifyApiIndex(ctx *fiber.Ctx) error {
 }
 
 // SpotifyBeginOAuth godoc
-// @Summary Redirects to spotify.com to begin OAuth2 token exchange
-// @Description Sets a cookie with the state key, builds
+// @Summary Begins Spotify OAuth token exchange for user to accept permissions
+// @Description First step in the OAuth flow. Sets a cookie on `spotify_auth_state` (SpotifyStateKey) to read later, builds a URL with OAuth config in query params and redirects to the Spotify-hosted OAuth service
 // @Tags spotify
 // @Accept */*
 // @Success 302
@@ -64,17 +65,19 @@ const SPOTIFY_CLIENT_ID = "SPOTIFY_CLIENT_ID"
 const SPOTIFY_CLIENT_SECRET = "SPOTIFY_CLIENT_SECRET"
 const SPOTIFY_REDIRECT_URI = "SPOTIFY_REDIRECT_URI"
 
-type TokenResponse struct {
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-}
-
+// SpotifyCallback godoc
+// @Summary Uses the `req.query.code` sent after SpotifyBeginOauth for authorization_code flow
+// @Description Following SpotifyBeginOAuth we get accessToken and refreshToken and write to db
+// @Tags spotify
+// @Accept */*
+// @Success 200
+// @Router /api/spotify/callback [get]
 func SpotifyCallback(ctx *fiber.Ctx) error {
 	//state := ctx.Cookies(utils.SpotifyStateKey)
 	ctx.ClearCookie(utils.SpotifyStateKey)
 
 	data := url.Values{
-		"grant_type":   []string{"client_credentials"},
+		"grant_type":   []string{"authorization_code"},
 		"redirect_uri": []string{*utils.CopyString(os.Getenv(SPOTIFY_REDIRECT_URI))},
 		"code":         []string{ctx.Query("code")},
 	}.Encode()
@@ -98,24 +101,20 @@ func SpotifyCallback(ctx *fiber.Ctx) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode == http.StatusOK {
-		tokenResponse := &TokenResponse{}
+		tokenResponse := &utils.TokenResponse{}
 		err := json.NewDecoder(resp.Body).Decode(tokenResponse)
 		if err != nil {
 			return ctx.SendStatus(fiber.StatusInternalServerError)
 		}
 
-		//item := map[string]interface{}{
-		//	"expiresAt":    time.Now().Add(3200 * time.Second).Unix(),
-		//	"accessToken":  tokenResponse.AccessToken,
-		//	"refreshToken": tokenResponse.RefreshToken,
-		//	"id":           "felguerez",
-		//}
-
-		//tableName := utils.CopyString(os.Getenv("TABLE_NAME"))
-		//_, err = Dynamo.Put(tableName, item).Run()
-		//if err != nil {
-		//	return ctx.SendStatus(fiber.StatusInternalServerError)
-		//}
+		item := utils.Item{
+			ExpiresAt:    time.Now().Add(3200 * time.Second).Unix(),
+			AccessToken:  tokenResponse.AccessToken,
+			RefreshToken: tokenResponse.RefreshToken,
+			Id:           "felguerez",
+		}
+		fmt.Println(item)
+		utils.PutItem(item)
 
 		return ctx.JSON(tokenResponse)
 	}
