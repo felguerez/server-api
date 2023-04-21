@@ -10,7 +10,7 @@ Building an API backend with Golang. I'm using Fiber as a web framework that loo
 
 ## Svelte embedded client
 
-This project uses a SvelteKit Embed module based on the gofiber/recipes example. The embedded client is found in the top-level `client` directory.
+This project uses a SvelteKit Embed module based on the [gofiber/recipes example](https://github.com/gofiber/recipes/tree/master/sveltekit-embed). The Svelte client is found in the top-level `client` directory.
 
 ### Running the client
 TODO: instructions for building and running the client
