@@ -6,7 +6,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/swagger"
 	"github.com/gofiber/template/html"
+	_ "github.com/joho/godotenv/autoload"
 	"log"
+	"os"
 	_ "web-service/docs"
 	"web-service/handlers"
 	"web-service/router"
@@ -34,6 +36,7 @@ func main() {
 	app.Static("/static", "./public")
 	app.Get("/swagger/*", swagger.HandlerDefault)
 	app.Get("/", handlers.Index)
+	fmt.Println(os.Getenv("HELLO"))
 
 	api := app.Group("/api", middleware)
 	router.AddSpotifyRoutes(api)
