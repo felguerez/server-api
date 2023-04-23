@@ -55,3 +55,24 @@ func PutItem(item Item) map[string]*dynamodb.AttributeValue {
 	fmt.Println("Successfully added item to db:" + string(item.AccessToken))
 	return av
 }
+
+func GetItem(key string) (*Item, error) {
+	input := &dynamodb.GetItemInput{
+		TableName: TableName,
+		Key: map[string]*dynamodb.AttributeValue{
+			"id": {
+				S: aws.String(key),
+			},
+		},
+	}
+	result, err := svc.GetItem(input)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil, err
+	}
+	var item Item
+	if err := dynamodbattribute.UnmarshalMap(result.Item, &item); err != nil {
+		return nil, err
+	}
+	return &item, nil
+}
