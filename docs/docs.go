@@ -26,7 +26,7 @@ const docTemplate = `{
     "paths": {
         "/": {
             "get": {
-                "description": "Renders Index view with variables injected",
+                "description": "Renders views/index.html with injected data",
                 "consumes": [
                     "*/*"
                 ],
@@ -46,6 +46,26 @@ const docTemplate = `{
         },
         "/api": {
             "get": {
+                "description": "GET api.spotify.com/v1/me/player/currently-playing\nResponds with",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Get Currently playing track from Spotify",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/spotify": {
+            "get": {
                 "description": "Returns a version number",
                 "consumes": [
                     "*/*"
@@ -54,9 +74,63 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "api"
+                    "spotify"
                 ],
-                "summary": "API index route",
+                "summary": "Spotify API index route",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/spotify/authenticate": {
+            "get": {
+                "description": "First step in the OAuth flow. Sets a cookie on ` + "`" + `spotify_auth_state` + "`" + ` (SpotifyStateKey) to read later, builds a URL with OAuth config in query params and redirects to the Spotify-hosted OAuth service",
+                "consumes": [
+                    "*/*"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Begins Spotify OAuth token exchange for user to accept permissions",
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    }
+                }
+            }
+        },
+        "/api/spotify/callback": {
+            "get": {
+                "description": "Following BeginOAuth we get accessToken and refreshToken and write to db",
+                "consumes": [
+                    "*/*"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Uses the ` + "`" + `req.query.code` + "`" + ` sent after SpotifyBeginOauth for authorization_code flow",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/spotify/recently-played": {
+            "get": {
+                "description": "GET api.spotify.com/v1/me/player/recently-played\nSends back array of tracks",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Get recently played tracks by user from Spotify Web API",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -77,6 +151,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "This is a sample swagger for Fiber",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

@@ -16,7 +16,7 @@ paths:
     get:
       consumes:
       - '*/*'
-      description: Renders Index view with variables injected
+      description: Renders views/index.html with injected data
       produces:
       - text/html
       responses:
@@ -29,13 +29,69 @@ paths:
     get:
       consumes:
       - '*/*'
+      description: |-
+        GET api.spotify.com/v1/me/player/currently-playing
+        Responds with
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get Currently playing track from Spotify
+      tags:
+      - spotify
+  /api/spotify:
+    get:
+      consumes:
+      - '*/*'
       description: Returns a version number
       produces:
       - application/json
       responses:
         "200":
           description: OK
-      summary: API index route
+      summary: Spotify API index route
       tags:
-      - api
+      - spotify
+  /api/spotify/authenticate:
+    get:
+      consumes:
+      - '*/*'
+      description: First step in the OAuth flow. Sets a cookie on `spotify_auth_state`
+        (SpotifyStateKey) to read later, builds a URL with OAuth config in query params
+        and redirects to the Spotify-hosted OAuth service
+      responses:
+        "302":
+          description: Found
+      summary: Begins Spotify OAuth token exchange for user to accept permissions
+      tags:
+      - spotify
+  /api/spotify/callback:
+    get:
+      consumes:
+      - '*/*'
+      description: Following BeginOAuth we get accessToken and refreshToken and write
+        to db
+      responses:
+        "200":
+          description: OK
+      summary: Uses the `req.query.code` sent after SpotifyBeginOauth for authorization_code
+        flow
+      tags:
+      - spotify
+  /api/spotify/recently-played:
+    get:
+      consumes:
+      - '*/*'
+      description: |-
+        GET api.spotify.com/v1/me/player/recently-played
+        Sends back array of tracks
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get recently played tracks by user from Spotify Web API
+      tags:
+      - spotify
 swagger: "2.0"
