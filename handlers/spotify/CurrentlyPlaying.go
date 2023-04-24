@@ -1,14 +1,10 @@
 package spotify
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"golang.org/x/oauth2"
 	"net/http"
-	"os"
-	"time"
 	"web-service/utils"
 )
 
@@ -26,36 +22,10 @@ func CurrentlyPlaying(c *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println("Could not get item from dynamodb with key `felguerez`")
 	}
-	accessToken := tokens.AccessToken
-	refreshToken := tokens.RefreshToken
-	expiresAt := time.Unix(tokens.ExpiresAt, 0)
-
-	// If access token has expired, use refresh token to get a new one
-	if time.Now().After(expiresAt) {
-		conf := &oauth2.Config{
-			ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
-			ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
-			Endpoint: oauth2.Endpoint{
-				TokenURL: "https://accounts.spotify.com/api/token",
-			},
-		}
-
-		token := &oauth2.Token{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
-			Expiry:       expiresAt,
-		}
-
-		newToken, err := conf.TokenSource(context.Background(), token).Token()
-		if err != nil {
-			return err
-		}
-
-		accessToken = newToken.AccessToken
-		refreshToken = newToken.RefreshToken
-		expiresAt = newToken.Expiry
+	accessToken, _, _, err := ensureFreshTokens(tokens)
+	if err != nil {
+		return err
 	}
-
 	// Make API request to get user's recently played tracks
 	client := http.DefaultClient
 	req, err := http.NewRequest("GET", "https://api.spotify.com/v1/me/player/currently-playing", nil)
