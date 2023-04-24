@@ -12,22 +12,6 @@ import (
 	"web-service/utils"
 )
 
-type currentlyPlayingTrackResponse struct {
-	Item      *Track `json:"item,omitempty"`
-	IsPlaying bool   `json:"is_playing"`
-}
-
-type CurrentlyPlayingResponse struct {
-	Item                 *Track   `json:"item,omitempty"`
-	Context              *Context `json:"context,omitempty"`
-	Timestamp            int64    `json:"timestamp"`
-	ProgressMs           int      `json:"progress_ms"`
-	IsPlaying            bool     `json:"is_playing"`
-	ItemId               string   `json:"item_id"`
-	Actions              Actions  `json:"actions"`
-	CurrentlyPlayingType string   `json:"currently_playing_type"`
-}
-
 // CurrentlyPlaying godoc
 // @Summary Get Currently playing track from Spotify
 // @Description GET api.spotify.com/v1/me/player/currently-playing
@@ -86,11 +70,15 @@ func CurrentlyPlaying(c *fiber.Ctx) error {
 	}
 	defer resp.Body.Close()
 
-	var currentlyPlaying currentlyPlayingTrackResponse
+	var currentlyPlaying CurrentlyPlayingResponse
 	err = json.NewDecoder(resp.Body).Decode(&currentlyPlaying)
+
+	if !currentlyPlaying.IsPlaying {
+		return c.JSON(fiber.Map{"is_playing": false, "item": nil})
+	}
+
 	if err != nil {
 		return err
 	}
-
 	return c.JSON(currentlyPlaying)
 }

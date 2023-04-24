@@ -13,9 +13,16 @@ import (
 )
 
 type recentlyPlayedResponse struct {
-	Item      *Track   `json:"item"`
-	Context   *Context `json:"context,omitempty"`
+	Items     *[]Track `json:"items"`
 	IsPlaying bool     `json:"is_playing"`
+	limit     int      `json:"limit"`
+	href      string   `json:"href"`
+	cursors   cursors  `json:"cursors"`
+}
+
+type cursors struct {
+	after  string `json:"after"`
+	before string `json:"before"`
 }
 
 // RecentlyPlayedTracks godoc
@@ -76,11 +83,15 @@ func RecentlyPlayedTracks(c *fiber.Ctx) error {
 	}
 	defer resp.Body.Close()
 
-	var recentlyPlayed recentlyPlayedResponse
+	// TODO: decode resp.Body into a typed struct representing the payload
+	var recentlyPlayed RecentlyPlayedResponse
 	err = json.NewDecoder(resp.Body).Decode(&recentlyPlayed)
+	//var data interface{}
+	//err = json.NewDecoder(resp.Body).Decode(&data)
 	if err != nil {
 		return err
 	}
-
+	// TODO: provide a custom response to the client instead of passing through API response
+	//return c.JSON(recentlyPlayed)
 	return c.JSON(recentlyPlayed)
 }
