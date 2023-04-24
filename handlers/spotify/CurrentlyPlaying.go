@@ -43,6 +43,10 @@ func CurrentlyPlaying(c *fiber.Ctx) error {
 	var currentlyPlaying CurrentlyPlayingResponse
 	err = json.NewDecoder(resp.Body).Decode(&currentlyPlaying)
 
+	if currentlyPlaying.CurrentlyPlayingType == "episode" {
+		return c.JSON(fiber.Map{"is_playing": true, "item": nil, "currently_playing_type": currentlyPlaying.CurrentlyPlayingType})
+	}
+
 	if !currentlyPlaying.IsPlaying {
 		return c.JSON(fiber.Map{"is_playing": false, "item": nil})
 	}
