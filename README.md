@@ -12,11 +12,11 @@ Welcome to `web-service`!
 This project assumes you have an AWS account already configured with access keys in  `~/.aws/credentials`. You'll need this to create and use DynamoDB for storage.
 
 #### Spotify Web API
-This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create an app at [Spotify for Developers](https://developer.spotify.com/dashboard)   
+This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create an app at [Spotify for Developers](https://developer.spotify.com/dashboard).
 
 ### Install Golang
 
-This project uses Go v1.20.3. You can find  installation instructions at [go.dev](https://go.dev/doc/install) or install with homebrew:
+This project uses Go `v1.20.3`. You can find  installation instructions at [go.dev](https://go.dev/doc/install) or install with homebrew:
 
 ```shell
 brew install go
@@ -47,14 +47,11 @@ $ go build
 ```shell
 $ go run web-service 
 ```
-You can run the project with [air](https://github.com/cosmtrek/air/) for nodemon-style live reloading:
+Pro tip: You can run the project with [air](https://github.com/cosmtrek/air/) for nodemon-style live reloading:
 ```shell
 $ go install github.com/cosmtrek/air@latest
 $ echo -e "\nalias air=$(go env GOPATH)/bin/air"
 $ air # runs and reloads the app using .air.toml config
 ```
 
-5. Congrats! 🍾 You've got an app running on http://localhost:3000
-
-### Running the client
-TODO: instructions for building and running the client
+5. Congrats! 🍾 You've got an app running on http://localhost:3000. You can also view the API docs at http://localhost:3000/swagger.
