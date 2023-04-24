@@ -1,6 +1,6 @@
 # server-api
 
-Building an API backend with Golang, I'm using Fiber as a web framework that looks a lot like Express from Node.
+Building an API backend with Golang. I'm using Fiber as a web framework that looks a lot like Express from Node.
 
 ## Getting started
 
