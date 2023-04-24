@@ -23,8 +23,7 @@ type cursors struct {
 
 // RecentlyPlayedTracks godoc
 // @Summary Get recently played tracks by user from Spotify Web API
-// @Description GET api.spotify.com/v1/me/player/recently-played
-// @Description Sends back array of tracks
+// @Description GET api.spotify.com/v1/me/player/recently-played. Sends back array of tracks.
 // @Tags spotify
 // @Accept */*
 // @Produce application/json

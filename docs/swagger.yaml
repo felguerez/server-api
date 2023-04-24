@@ -1,16 +1,5 @@
-basePath: /
-host: localhost:3000
 info:
-  contact:
-    email: fiber@swagger.io
-    name: API Support
-  description: This is a sample swagger for Fiber
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
-  title: Fiber Example API
-  version: "1.0"
+  contact: {}
 paths:
   /:
     get:
@@ -83,9 +72,8 @@ paths:
     get:
       consumes:
       - '*/*'
-      description: |-
-        GET api.spotify.com/v1/me/player/recently-played
-        Sends back array of tracks
+      description: GET api.spotify.com/v1/me/player/recently-played. Sends back array
+        of tracks
       produces:
       - application/json
       responses:
