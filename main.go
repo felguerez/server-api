@@ -5,6 +5,7 @@ import (
 	"github.com/gofiber/swagger"
 	"github.com/gofiber/template/html"
 	"log"
+	"os"
 	"web-service/handlers"
 	"web-service/router"
 
@@ -41,7 +42,12 @@ func main() {
 	api := app.Group("/api", middleware)
 	router.AddSpotifyRoutes(api)
 
+	port, exists := os.LookupEnv("PORT")
+	if !exists {
+		port = "8080" // TODO: find out how to run GCR on another port
+	}
+
 	fmt.Println("Starting app in development mode")
 	// Run the app as a typical Go Fiber app for development
-	log.Fatal(app.Listen(":3000"))
+	log.Fatal(app.Listen(":" + port))
 }
