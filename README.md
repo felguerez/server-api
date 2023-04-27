@@ -4,25 +4,26 @@ Building an API backend with Golang. I'm using Fiber as a web framework that loo
 
 ## Getting started
 
-Welcome to `web-service`!
+Hello future collaborator, welcome to `web-service`!
 
 ### Prerequisites
 
-#### AWS/DynamoDB
-This project assumes you have an AWS account already configured with access keys in  `~/.aws/credentials`. You'll need this to create and use DynamoDB for storage.
+Before you get the project running you'll need to set up:
 
-#### Spotify Web API
-This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create an app at [Spotify for Developers](https://developer.spotify.com/dashboard).
-
-### Install Golang
-
+#### Golang
 This project uses Go `v1.20.3`. You can find  installation instructions at [go.dev](https://go.dev/doc/install) or install with homebrew:
 
 ```shell
 brew install go
 ```
 
-### Installation and setup
+#### AWS/DynamoDB
+This project assumes you have an AWS account already configured with access keys in  `~/.aws/credentials`. You'll need this to create and use DynamoDB for storage, as well to deploy on AWS Lambda.
+
+#### Spotify Web API
+This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create an app at [Spotify for Developers](https://developer.spotify.com/dashboard).
+
+## Installation and setup (development)
 
 1. Clone the repo:
 ```shell
@@ -38,7 +39,7 @@ $ go get .
 $ mv .env.example .env
 ```
 4. Create a DynamoDB table and copy the name to `.env` as `TABLE_NAME`
-5. Create an app at developer.spotify.com and copy the client id and client secret to `.env` as `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` respectively. 
+5. Create an app at [developer.spotify.com](https://developer.spotify.com/dashboard) and copy the client id and client secret to `.env` as `SPOTIFY_CLIENT_ID` and `SPOTIFY_CLIENT_SECRET` respectively. 
 6. Build the project:
 ```shell
 $ go build
@@ -54,4 +55,8 @@ $ echo -e "\nalias air=$(go env GOPATH)/bin/air"
 $ air # runs and reloads the app using .air.toml config
 ```
 
-5. Congrats! 🍾 You've got an app running on http://localhost:3000. You can also view the API docs at http://localhost:3000/swagger.
+8. Congrats! 🍾 You've got an app running on http://localhost:3000. You can also view the API docs at http://localhost:3000/swagger.
+
+## Deployment
+
+We're working on it :)

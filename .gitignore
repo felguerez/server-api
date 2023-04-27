@@ -2,3 +2,5 @@
 tmp
 web-service
 .env
+.aws-sam
+lambda-trust-policy.json

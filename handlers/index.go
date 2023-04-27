@@ -17,7 +17,7 @@ const SPOTIFY_REDIRECT_URI = "SPOTIFY_REDIRECT_URI"
 // @Success 200
 // @Router / [get]
 func Index(ctx *fiber.Ctx) error {
-	return ctx.Render("index", fiber.Map{
+	return ctx.JSON(fiber.Map{
 		"Title": "yooooo",
 		"hello": "greetings",
 	})
