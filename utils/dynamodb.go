@@ -66,6 +66,7 @@ func GetItem(key string) (*Item, error) {
 			},
 		},
 	}
+	fmt.Println("Getting item with key: " + key)
 	result, err := DbClient().GetItem(input)
 	if err != nil {
 		fmt.Println(err.Error())
