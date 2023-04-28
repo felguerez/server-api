@@ -44,7 +44,7 @@ func main() {
 
 	port, exists := os.LookupEnv("PORT")
 	if !exists {
-		port = "8080" // TODO: find out how to run GCR on another port
+		port = "8080" // TODO: change port number in cloud run inline yaml or define yaml
 	}
 
 	fmt.Println("Starting app in development mode")
