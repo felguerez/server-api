@@ -88,13 +88,10 @@ func createDynamoDBClient(sess *session.Session) (*dynamodb.DynamoDB, error) {
 // credentials from the shared credentials file ~/.aws/credentials
 // and region from the shared configuration file ~/.aws/config.
 func initializeSession() (*dynamodb.DynamoDB, error) {
-	accessKey, accessSecret, err := getAWSCredentials()
-	if err != nil {
-		fmt.Println("uh oh! no keys!")
-		return nil, err
-	}
+	secretKeyId := os.Getenv("AWS_SECRET_KEY_ID")
+	secretAccessKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 
-	config := aws.NewConfig().WithCredentials(credentials.NewStaticCredentials(accessKey, accessSecret, "us-east-1"))
+	config := aws.NewConfig().WithRegion("us-east-1").WithCredentials(credentials.NewStaticCredentials(secretKeyId, secretAccessKey, ""))
 
 	sess, err := session.NewSessionWithOptions(session.Options{
 		Config: *config,
