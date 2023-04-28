@@ -58,5 +58,8 @@ $ air # runs and reloads the app using .air.toml config
 8. Congrats! 🍾 You've got an app running on http://localhost:3000. You can also view the API docs at http://localhost:3000/swagger.
 
 ## Deployment
+This project deploys continuously via [Google Cloud Run](https://cloud.google.com/run):
 
-We're working on it :)
+https://server-api-c4m6jglxsq-uc.a.run.app/
+
+**TODO: register a domain**

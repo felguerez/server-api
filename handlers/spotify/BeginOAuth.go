@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"net/url"
-	"os"
 	"web-service/utils"
 )
 
@@ -18,11 +17,15 @@ import (
 func BeginOAuth(ctx *fiber.Ctx) error {
 	state := utils.RandStringBytes(16)
 	ctx.Cookie(&fiber.Cookie{Name: utils.SpotifyStateKey, Value: state})
+	clientId, clientSecret, err := utils.GetSpotifyCredentials()
+	if err != nil {
+		fmt.Println("we got an error")
+	}
 	query := url.Values{}
 	query.Set("response_type", "code")
-	query.Set("client_id", os.Getenv("SPOTIFY_CLIENT_ID"))
+	query.Set("client_id", clientId)
 	query.Set("scope", utils.Scope)
-	query.Set("redirect_uri", os.Getenv("SPOTIFY_REDIRECT_URI"))
+	query.Set("redirect_uri", clientSecret)
 	query.Set("state", state)
 
 	spotifyAuthURL := fmt.Sprintf("%s?%s", "https://accounts.spotify.com/authorize", query.Encode())

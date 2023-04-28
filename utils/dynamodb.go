@@ -3,6 +3,7 @@ package utils
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
@@ -33,7 +34,7 @@ var sess = session.Must(session.NewSessionWithOptions(session.Options{
 	SharedConfigState: session.SharedConfigEnable,
 }))
 
-var svc = dynamodb.New(sess)
+var svc *dynamodb.DynamoDB
 
 // PutItem godoc
 // @Summary Adds a Spotify accessToken to the db
@@ -48,7 +49,7 @@ func PutItem(item Item) map[string]*dynamodb.AttributeValue {
 		Item:      av,
 		TableName: TableName,
 	}
-	_, err = svc.PutItem(input)
+	_, err = DbClient().PutItem(input)
 	if err != nil {
 		log.Fatalf("Got error calling PutItem: %s", err)
 	}
@@ -65,7 +66,7 @@ func GetItem(key string) (*Item, error) {
 			},
 		},
 	}
-	result, err := svc.GetItem(input)
+	result, err := DbClient().GetItem(input)
 	if err != nil {
 		fmt.Println(err.Error())
 		return nil, err
@@ -75,4 +76,46 @@ func GetItem(key string) (*Item, error) {
 		return nil, err
 	}
 	return &item, nil
+}
+
+// Create a new DynamoDB service client with the retrieved AWS credentials
+func createDynamoDBClient(sess *session.Session) (*dynamodb.DynamoDB, error) {
+	svc := dynamodb.New(sess)
+	return svc, nil
+}
+
+// Initialize a session that the SDK will use to load
+// credentials from the shared credentials file ~/.aws/credentials
+// and region from the shared configuration file ~/.aws/config.
+func initializeSession() (*dynamodb.DynamoDB, error) {
+	accessKey, accessSecret, err := getAWSCredentials()
+	if err != nil {
+		fmt.Println("uh oh! no keys!")
+		return nil, err
+	}
+
+	config := aws.NewConfig().WithCredentials(credentials.NewStaticCredentials(accessKey, accessSecret, "us-east-1"))
+
+	sess, err := session.NewSessionWithOptions(session.Options{
+		Config: *config,
+	})
+	if err != nil {
+		return nil, err
+	}
+	svc, err = createDynamoDBClient(sess)
+	if err != nil {
+		return nil, err
+	}
+	return svc, nil
+}
+
+func DbClient() *dynamodb.DynamoDB {
+	if svc != nil {
+		return svc
+	}
+	svc, err := initializeSession()
+	if err != nil {
+		fmt.Println("Couldn't initialize the db")
+	}
+	return svc
 }
