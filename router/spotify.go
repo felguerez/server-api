@@ -12,4 +12,5 @@ func AddSpotifyRoutes(router fiber.Router) {
 	group.Get("/callback", spotify.OAuthCallback)
 	group.Get("/recently-played", spotify.RecentlyPlayedTracks)
 	group.Get("/currently-playing", spotify.CurrentlyPlaying)
+	group.Get("/top/:type", spotify.TopItems)
 }

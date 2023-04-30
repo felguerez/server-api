@@ -10,13 +10,15 @@ import (
 
 // CurrentlyPlaying godoc
 // @Summary Get Currently playing track from Spotify
-// @Description GET api.spotify.com/v1/me/player/currently-playing
-// @Description Responds with
+// @Description GET https://api.spotify.com/v1/me/player/currently-playing
+// @Description * For currently playing music tracks, this endpoint responds in JSON with a currently playing `Track` as `item`.
+// @Description * For currently playing podcasts, this endpoint responds in JSON with `{ "is_playing": "true, "item", nil, "currently_playing_type": "episode" }`. Spotify's API doesn't provide any episode data.
+// @Description * When not currently listening, this endpoint responds in JSON with `{ "is_playing": false, "item": nil }`.
 // @Tags spotify
 // @Accept */*
 // @Produce application/json
 // @Success 200
-// @Router /api [get]
+// @Router /api/spotify/currently-playing [get]
 func CurrentlyPlaying(c *fiber.Ctx) error {
 	tokens, err := utils.GetItem("felguerez") // TODO: remove hardcoded key
 	if err != nil {

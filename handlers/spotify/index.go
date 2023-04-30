@@ -25,8 +25,12 @@ type Disallows struct {
 
 type Artist struct {
 	ExternalUrls ExternalUrls `json:"external_urls"`
+	Genres       []string     `json:"genres,omitempty"`
 	Href         string       `json:"href"`
+	Id           string       `json:"id,omitempty"`
+	Images       []Image      `json:"images,omitempty"`
 	Name         string       `json:"name"`
+	Popularity   int          `json:"popularity,omitempty"`
 	Type         string       `json:"type"`
 	Uri          string       `json:"uri"`
 }
@@ -39,6 +43,11 @@ type Image struct {
 
 type ExternalUrls struct {
 	Spotify string `json:"spotify"`
+}
+
+type Followers struct {
+	Href  string `json:"href"`
+	Total int    `json:"total"`
 }
 
 type Album struct {
@@ -124,6 +133,24 @@ type CurrentlyPlayingResponse struct {
 	Actions              Actions      `json:"actions"`
 	CurrentlyPlayingType string       `json:"currently_playing_type"`
 	Device               DeviceObject `json:"device"`
+}
+
+type TopArtistsResponse struct {
+	Items    []Artist `json:"items"`
+	Total    int      `json:"total"`
+	Limit    int      `json:"limit"`
+	Offset   int      `json:"offset"`
+	Next     string   `json:"next"`
+	Previous string   `json:"previous"`
+}
+
+type TopTracksResponse struct {
+	Items    []Track `json:"items"`
+	Total    int     `json:"total"`
+	Limit    int     `json:"limit"`
+	Offset   int     `json:"offset"`
+	Next     string  `json:"next"`
+	Previous string  `json:"previous"`
 }
 
 // ensureFreshTokens godoc

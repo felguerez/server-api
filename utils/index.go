@@ -20,8 +20,10 @@ const SpotifyStateKey = "spotify_auth_state"
 var Scope = strings.Join([]string{
 	"user-read-private",
 	"user-read-email",
+	"user-follow-read",
 	"user-read-currently-playing",
 	"user-read-playback-state",
+	"user-top-read",
 	"user-read-recently-played",
 }, " ")
 

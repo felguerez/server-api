@@ -10,7 +10,15 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "fiber@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -29,26 +37,6 @@ const docTemplate = `{
                     "root"
                 ],
                 "summary": "Render an index.html page",
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    }
-                }
-            }
-        },
-        "/api": {
-            "get": {
-                "description": "GET api.spotify.com/v1/me/player/currently-playing\nResponds with",
-                "consumes": [
-                    "*/*"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "spotify"
-                ],
-                "summary": "Get Currently playing track from Spotify",
                 "responses": {
                     "200": {
                         "description": "OK"
@@ -110,9 +98,29 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/spotify/currently-playing": {
+            "get": {
+                "description": "GET https://api.spotify.com/v1/me/player/currently-playing\n* For currently playing music tracks, this endpoint responds in JSON with a currently playing ` + "`" + `Track` + "`" + ` as ` + "`" + `item` + "`" + `.\n* For currently playing podcasts, this endpoint responds in JSON with ` + "`" + `{ \"is_playing\": \"true, \"item\", nil, \"currently_playing_type\": \"episode\" }` + "`" + `. Spotify's API doesn't provide any episode data.\n* When not currently listening, this endpoint responds in JSON with ` + "`" + `{ \"is_playing\": false, \"item\": nil }` + "`" + `.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Get Currently playing track from Spotify",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
         "/api/spotify/recently-played": {
             "get": {
-                "description": "GET api.spotify.com/v1/me/player/recently-played. Sends back array of tracks",
+                "description": "GET api.spotify.com/v1/me/player/recently-played. Sends back array of tracks.",
                 "consumes": [
                     "*/*"
                 ],
@@ -129,18 +137,53 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/api/spotify/top/{type}": {
+            "get": {
+                "description": "GET https://api.spotify.com/v1/me/top/:type.\n* Responds with ` + "`" + `items` + "`" + ` in JSON representing a list of artists or tracks.",
+                "consumes": [
+                    "*/*"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "spotify"
+                ],
+                "summary": "Get top items by type (artists or tracks)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Type of item to get, either ` + "`" + `artists` + "`" + ` or ` + "`" + `tracks` + "`" + `",
+                        "name": "type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Time range to query for top items, either ` + "`" + `short_term` + "`" + `, ` + "`" + `medium_term` + "`" + `, or ` + "`" + `long_term` + "`" + ` (default: ` + "`" + `medium_term` + "`" + `)",
+                        "name": "time_range",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
+	Version:          "1.0",
+	Host:             "localhost:3000",
+	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Fiber Example API",
+	Description:      "This is a sample swagger for Fiber",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

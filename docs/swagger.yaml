@@ -1,5 +1,16 @@
+basePath: /
+host: localhost:3000
 info:
-  contact: {}
+  contact:
+    email: fiber@swagger.io
+    name: API Support
+  description: This is a sample swagger for Fiber
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Fiber Example API
+  version: "1.0"
 paths:
   /:
     get:
@@ -14,21 +25,6 @@ paths:
       summary: Render an index.html page
       tags:
       - root
-  /api:
-    get:
-      consumes:
-      - '*/*'
-      description: |-
-        GET api.spotify.com/v1/me/player/currently-playing
-        Responds with
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      summary: Get Currently playing track from Spotify
-      tags:
-      - spotify
   /api/spotify:
     get:
       consumes:
@@ -68,18 +64,61 @@ paths:
         flow
       tags:
       - spotify
+  /api/spotify/currently-playing:
+    get:
+      consumes:
+      - '*/*'
+      description: |-
+        GET https://api.spotify.com/v1/me/player/currently-playing
+        * For currently playing music tracks, this endpoint responds in JSON with a currently playing `Track` as `item`.
+        * For currently playing podcasts, this endpoint responds in JSON with `{ "is_playing": "true, "item", nil, "currently_playing_type": "episode" }`. Spotify's API doesn't provide any episode data.
+        * When not currently listening, this endpoint responds in JSON with `{ "is_playing": false, "item": nil }`.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get Currently playing track from Spotify
+      tags:
+      - spotify
   /api/spotify/recently-played:
     get:
       consumes:
       - '*/*'
       description: GET api.spotify.com/v1/me/player/recently-played. Sends back array
-        of tracks
+        of tracks.
       produces:
       - application/json
       responses:
         "200":
           description: OK
       summary: Get recently played tracks by user from Spotify Web API
+      tags:
+      - spotify
+  /api/spotify/top/{type}:
+    get:
+      consumes:
+      - '*/*'
+      description: |-
+        GET https://api.spotify.com/v1/me/top/:type.
+        * Responds with `items` in JSON representing a list of artists or tracks.
+      parameters:
+      - description: Type of item to get, either `artists` or `tracks`
+        in: path
+        name: type
+        required: true
+        type: string
+      - description: 'Time range to query for top items, either `short_term`, `medium_term`,
+          or `long_term` (default: `medium_term`)'
+        in: query
+        name: time_range
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get top items by type (artists or tracks)
       tags:
       - spotify
 swagger: "2.0"

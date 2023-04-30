@@ -60,6 +60,8 @@ $ air # runs and reloads the app using .air.toml config
 ## Deployment
 This project deploys continuously via [Google Cloud Run](https://cloud.google.com/run):
 
-https://server-api-c4m6jglxsq-uc.a.run.app/
+* [🔗 root index](https://server-api-c4m6jglxsq-uc.a.run.app/)
+* [🔗 `/api/spotify/recently-played`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/recently-played)
+* [🔗 `/api/spotify/currently-playing`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/currently-playing)
 
-**TODO: register a domain**
+* **TODO: register a domain**
