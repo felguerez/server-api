@@ -1,10 +1,10 @@
 # server-api
 
-Building an API backend with Golang. I'm using Fiber as a web framework that looks a lot like Express from Node.
+Building a monolithic API backend with Golang. I'm using [gofiber/fiber](https://github.com/gofiber/fiber) as a web framework, which looks a lot like [Express](https://github.com/expressjs/express).
 
 ## Getting started
 
-Hello future collaborator, welcome to `web-service`!
+Time to set up `web-service`!
 
 ### Prerequisites
 
@@ -18,7 +18,7 @@ brew install go
 ```
 
 #### AWS/DynamoDB
-This project assumes you have an AWS account already configured with access keys in  `~/.aws/credentials`. You'll need this to create and use DynamoDB for storage, as well to deploy on AWS Lambda.
+This project assumes you have an AWS account already configured with access keys in  `~/.aws/credentials`. You'll need this to create and use DynamoDB for storage.
 
 #### Spotify Web API
 This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create an app at [Spotify for Developers](https://developer.spotify.com/dashboard).
@@ -63,5 +63,9 @@ This project deploys continuously via [Google Cloud Run](https://cloud.google.co
 * [🔗 root index](https://server-api-c4m6jglxsq-uc.a.run.app/)
 * [🔗 `/api/spotify/recently-played`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/recently-played)
 * [🔗 `/api/spotify/currently-playing`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/currently-playing)
+* [🔗 `/api/spotify/top/artists`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/top/artists)
+* [🔗 `/api/spotify/top/tracks`](https://server-api-c4m6jglxsq-uc.a.run.app/api/spotify/top/tracks)
 
-* **TODO: register a domain**
+### TODO
+* Register a domain
+* Deploy a client
