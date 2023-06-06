@@ -12,7 +12,7 @@ Time to set up `web-service`!
 #### Environment
 Before you get the project running you'll need to configure your environment. The app
 uses [dotenv](https://github.com/joho/godotenv) to autoload values
-defined in [.env](/.env); however, you can also pass these values as environment variables when running the app if you
+defined in [.env](/.env.example). You can also pass these values as environment variables when running the app if you
 prefer.
 
 #### Golang
@@ -26,14 +26,16 @@ brew install go
 
 #### AWS/DynamoDB
 
-You should have an AWS account with access keys (AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID) stored in [.env](/.env).
-You'll need AWS for storage using DynamoDB.
+You should have an AWS account with access keys (AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY_ID) stored in [.env](/.env.example).
+You'll need AWS for storage using DynamoDB. 
+
+After creating a DynamoDB table, add the table name to [.env](.env.example).
 
 #### Spotify Web API
 
 This project also uses the [Spotify Web API](https://developer.spotify.com/documentation/web-api). You'll need to create
 an app at [Spotify for Developers](https://developer.spotify.com/dashboard). Add your app's client ID and client secret
-to the [.env](/.env) file.
+to the [.env](/.env.example) file.
 
 #### Gmail App Password
 
