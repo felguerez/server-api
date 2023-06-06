@@ -34,6 +34,9 @@ func RecentlyPlayedTracks(c *fiber.Ctx) error {
 	if err != nil {
 		fmt.Println("Could not get item from dynamodb with key `felguerez`")
 	}
+	if tokens == nil {
+		return c.Status(422).JSON(fiber.Map{"message": "Could not get item from dynamodb with key `felguerez` from RecentlyPlayedTracks"})
+	}
 	accessToken, _, _, err := ensureFreshTokens(tokens)
 	if err != nil {
 		return err
@@ -46,9 +49,9 @@ func RecentlyPlayedTracks(c *fiber.Ctx) error {
 		return err
 	}
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
-
 	resp, err := client.Do(req)
 	if err != nil {
+		fmt.Sprintf("we got an error: %s", err.Error())
 		return err
 	}
 	defer resp.Body.Close()
@@ -58,6 +61,5 @@ func RecentlyPlayedTracks(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	// TODO: provide a custom response to the client instead of passing through API response
 	return c.JSON(recentlyPlayed)
 }

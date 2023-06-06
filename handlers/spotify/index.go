@@ -2,6 +2,7 @@ package spotify
 
 import (
 	"context"
+	"errors"
 	"golang.org/x/oauth2"
 	"os"
 	"time"
@@ -156,6 +157,9 @@ type TopTracksResponse struct {
 // ensureFreshTokens godoc
 // @Summary Validates the token expiry and exchanges for new tokens if expired
 func ensureFreshTokens(tokens *utils.Item) (string, string, time.Time, error) {
+	if tokens == nil {
+		return "", "", time.Now(), errors.New("nil tokens provided to ensureFreshToken")
+	}
 	accessToken := tokens.AccessToken
 	refreshToken := tokens.RefreshToken
 	expiresAt := time.Unix(tokens.ExpiresAt, 0)
@@ -187,4 +191,29 @@ func ensureFreshTokens(tokens *utils.Item) (string, string, time.Time, error) {
 	}
 
 	return accessToken, refreshToken, expiresAt, nil
+}
+
+// TODO: determine if this is a good idea; I don't think so
+func GroupConsecutiveTracks(recentlyPlayed *RecentlyPlayedResponse) [][]Item {
+	var groupedItems [][]Item
+	var tempGroup []Item
+
+	for i := 0; i < len(recentlyPlayed.Items)-1; i++ {
+		currentItem := recentlyPlayed.Items[i]
+		nextItem := recentlyPlayed.Items[i+1]
+
+		currentArtistID := currentItem.TrackInfo.Artists[0].Id
+		nextArtistID := nextItem.TrackInfo.Artists[0].Id
+
+		tempGroup = append(tempGroup, currentItem)
+
+		if currentArtistID != nextArtistID {
+			groupedItems = append(groupedItems, tempGroup)
+			tempGroup = []Item{}
+		}
+	}
+	tempGroup = append(tempGroup, recentlyPlayed.Items[len(recentlyPlayed.Items)-1])
+	groupedItems = append(groupedItems, tempGroup)
+
+	return groupedItems
 }

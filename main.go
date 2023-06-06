@@ -41,6 +41,7 @@ func main() {
 
 	api := app.Group("/api", middleware)
 	router.AddSpotifyRoutes(api)
+	app.Post("/email", handlers.Email)
 
 	port, exists := os.LookupEnv("PORT")
 	if !exists {

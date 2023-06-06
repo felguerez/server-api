@@ -33,6 +33,7 @@ func TopItems(c *fiber.Ctx) error {
 	}
 
 	entity := c.Params("type")
+	timeRange := c.Query("time_range", "medium_term") // get time_range from the request url
 
 	endpoint := fmt.Sprintf("https://api.spotify.com/v1/me/top/%s", entity)
 
@@ -45,7 +46,9 @@ func TopItems(c *fiber.Ctx) error {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", accessToken))
 
 	q := req.URL.Query()
-	q.Add("time_range", c.Query("time_range", "medium_term"))
+	fmt.Println(q)
+	q.Add("time_range", timeRange) // add time_range to the API endpoint url
+	fmt.Println(q.Encode())
 	req.URL.RawQuery = q.Encode()
 	fmt.Println(fmt.Sprintf("Getting %s from url: %s", entity, req.URL.String()))
 	resp, err := client.Do(req)
