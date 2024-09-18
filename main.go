@@ -2,17 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/gofiber/swagger"
-	"github.com/gofiber/template/html"
-	"log"
-	"os"
-	"web-service/handlers"
-	"web-service/router"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/swagger"
+	"github.com/gofiber/template/html"
 	_ "github.com/joho/godotenv/autoload"
+	"log"
+	"os"
 	_ "web-service/docs"
+	"web-service/handlers"
+	"web-service/handlers/spotify"
 )
 
 func middleware(c *fiber.Ctx) error {
@@ -40,7 +39,7 @@ func main() {
 	app.Get("/", handlers.Index)
 
 	api := app.Group("/api", middleware)
-	router.AddSpotifyRoutes(api)
+	spotify.AddSpotifyRoutes(api)
 	app.Post("/email", handlers.Email)
 
 	port, exists := os.LookupEnv("PORT")

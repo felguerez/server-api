@@ -1,12 +1,7 @@
 package spotify
 
 import (
-	"context"
-	"errors"
-	"golang.org/x/oauth2"
-	"os"
 	"time"
-	"web-service/utils"
 )
 
 type Context struct {
@@ -116,6 +111,27 @@ type Item struct {
 	TrackInfo TrackInfo `json:"track"`
 }
 
+type PlayableItem interface {
+	GetName() string
+	GetDuration() int
+}
+
+func (t Track) GetName() string {
+	return t.Name
+}
+
+func (t Track) GetDuration() int {
+	return t.Album.TotalTracks
+}
+
+func (e PodcastEpisode) GetName() string {
+	return e.Name
+}
+
+func (e PodcastEpisode) GetDuration() int {
+	return e.DurationMs
+}
+
 type RecentlyPlayedResponse struct {
 	Cursors Cursors `json:"cursors"`
 	Href    string  `json:"href"`
@@ -125,7 +141,7 @@ type RecentlyPlayedResponse struct {
 }
 
 type CurrentlyPlayingResponse struct {
-	Item                 *Track       `json:"item,omitempty"`
+	Item                 interface{}  `json:"item,omitempty"` // Raw JSON for later manual unmarshalling
 	Context              *Context     `json:"context,omitempty"`
 	Timestamp            int64        `json:"timestamp"`
 	ProgressMs           int          `json:"progress_ms"`
@@ -154,66 +170,42 @@ type TopTracksResponse struct {
 	Previous string  `json:"previous"`
 }
 
-// ensureFreshTokens godoc
-// @Summary Validates the token expiry and exchanges for new tokens if expired
-func ensureFreshTokens(tokens *utils.Item) (string, string, time.Time, error) {
-	if tokens == nil {
-		return "", "", time.Now(), errors.New("nil tokens provided to ensureFreshToken")
-	}
-	accessToken := tokens.AccessToken
-	refreshToken := tokens.RefreshToken
-	expiresAt := time.Unix(tokens.ExpiresAt, 0)
-
-	// access token is expired - use refresh token to get a new one
-	if time.Now().After(expiresAt) {
-		conf := &oauth2.Config{
-			ClientID:     os.Getenv("SPOTIFY_CLIENT_ID"),
-			ClientSecret: os.Getenv("SPOTIFY_CLIENT_SECRET"),
-			Endpoint: oauth2.Endpoint{
-				TokenURL: "https://accounts.spotify.com/api/token",
-			},
-		}
-
-		token := &oauth2.Token{
-			AccessToken:  accessToken,
-			RefreshToken: refreshToken,
-			Expiry:       expiresAt,
-		}
-
-		newToken, err := conf.TokenSource(context.Background(), token).Token()
-		if err != nil {
-			return "", "", time.Time{}, err
-		}
-
-		accessToken = newToken.AccessToken
-		refreshToken = newToken.RefreshToken
-		expiresAt = newToken.Expiry
-	}
-
-	return accessToken, refreshToken, expiresAt, nil
+type PodcastEpisode struct {
+	AudioPreviewURL      string       `json:"audio_preview_url"`
+	Description          string       `json:"description"`
+	DurationMs           int          `json:"duration_ms"`
+	Explicit             bool         `json:"explicit"`
+	ExternalUrls         ExternalUrls `json:"external_urls"`
+	Href                 string       `json:"href"`
+	ID                   string       `json:"id"`
+	Images               []Image      `json:"images"`
+	IsExternallyHosted   bool         `json:"is_externally_hosted"`
+	IsPlayable           bool         `json:"is_playable"`
+	Language             string       `json:"language"`
+	Languages            []string     `json:"languages"`
+	Name                 string       `json:"name"`
+	ReleaseDate          string       `json:"release_date"`
+	ReleaseDatePrecision string       `json:"release_date_precision"`
+	ResumePoint          ResumePoint  `json:"resume_point"`
+	Show                 PodcastShow  `json:"show"`
+	Type                 string       `json:"type"`
+	URI                  string       `json:"uri"`
 }
 
-// TODO: determine if this is a good idea; I don't think so
-func GroupConsecutiveTracks(recentlyPlayed *RecentlyPlayedResponse) [][]Item {
-	var groupedItems [][]Item
-	var tempGroup []Item
+type PodcastShow struct {
+	Name             string       `json:"name"`
+	Publisher        string       `json:"publisher"`
+	ExternalUrls     ExternalUrls `json:"external_urls"`
+	Href             string       `json:"href"`
+	ID               string       `json:"id"`
+	Images           []Image      `json:"images"`
+	URI              string       `json:"uri"`
+	AvailableMarkets []string     `json:"available_markets"`
+	Description      string       `json:"description"`
+	HTMLDescription  string       `json:"html_description"`
+}
 
-	for i := 0; i < len(recentlyPlayed.Items)-1; i++ {
-		currentItem := recentlyPlayed.Items[i]
-		nextItem := recentlyPlayed.Items[i+1]
-
-		currentArtistID := currentItem.TrackInfo.Artists[0].Id
-		nextArtistID := nextItem.TrackInfo.Artists[0].Id
-
-		tempGroup = append(tempGroup, currentItem)
-
-		if currentArtistID != nextArtistID {
-			groupedItems = append(groupedItems, tempGroup)
-			tempGroup = []Item{}
-		}
-	}
-	tempGroup = append(tempGroup, recentlyPlayed.Items[len(recentlyPlayed.Items)-1])
-	groupedItems = append(groupedItems, tempGroup)
-
-	return groupedItems
+type ResumePoint struct {
+	FullyPlayed      bool `json:"fully_played"`
+	ResumePositionMs int  `json:"resume_position_ms"`
 }
